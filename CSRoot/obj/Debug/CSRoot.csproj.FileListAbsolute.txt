@@ -1,0 +1,5 @@
+K:\Apps\CSRoot\Bin\CSRoot.dll
+K:\Apps\CSRoot\Bin\CSRoot.pdb
+K:\Apps\CSRoot\CSRoot\obj\Debug\CSRoot.csprojResolveAssemblyReference.cache
+K:\Apps\CSRoot\CSRoot\obj\Debug\CSRoot.dll
+K:\Apps\CSRoot\CSRoot\obj\Debug\CSRoot.pdb

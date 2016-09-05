@@ -43,8 +43,6 @@ namespace MissionControl
 
                 SyncDataFromServer(remoteObject);
 
-                //Set the directory from which hooker is started. our dynamic dll will be generated here
-                //AsmGen.SetLibraryPath(m_ClientDirectory);
                 s_Logger.LogInfo("The port sent from server is " + m_Port.ToString(CultureInfo.CurrentCulture));
                 
                 //now start thread to listen to client

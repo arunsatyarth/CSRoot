@@ -1,5 +1,0 @@
-K:\Apps\CSRoot\Bin\MissionControl.dll
-K:\Apps\CSRoot\Bin\MissionControl.pdb
-K:\Apps\CSRoot\MissionControl\obj\Debug\MissionControl.csprojResolveAssemblyReference.cache
-K:\Apps\CSRoot\MissionControl\obj\Debug\MissionControl.dll
-K:\Apps\CSRoot\MissionControl\obj\Debug\MissionControl.pdb

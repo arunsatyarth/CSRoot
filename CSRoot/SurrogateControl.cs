@@ -17,7 +17,7 @@ namespace CSRoot
         }
         private static MethodInfo s_SerializerFunction;
         private static object s_SerializerObject;
-        public static SurrogateControl()
+        static SurrogateControl()
         {
             Assembly runtimeSerializer=Assembly.LoadFile("RuntimeSerializer.dll");
             if(runtimeSerializer!=null)
@@ -50,9 +50,42 @@ namespace CSRoot
             return newObject;
         }
 
-        public object Invoke(string functionname, object[] parameters)
+        public object Invoke(string functionName, object[] parameters, BindingFlags flags = BindingFlags.Default)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return m_WinControl.Invoke(functionName, parameters,flags);
+            }
+            catch (SerializationException ex)
+            {
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            Type typeOfControl;
+            int i = 0;
+            try
+            {
+                object[] remotableParamsters = new Object[parameters.Length];
+                foreach (object item in parameters)
+                {
+                    typeOfControl = item.GetType();
+                    if (typeOfControl.IsValueType)//value types generally do not cause serialization issues
+                    {
+                        remotableParamsters[i++] = item;
+                        continue;
+                    }
+                    object inst = Serialize(item);
+                    remotableParamsters[i++] = inst;
+                }
+                return m_WinControl.Invoke(functionName, remotableParamsters, flags);
+            }
+            catch (Exception ex)
+            {
+                return null;    
+            }
+
         }
 
         public object InvokeAsync(string functionname, object[] parameters)
@@ -65,21 +98,24 @@ namespace CSRoot
             throw new NotImplementedException();
         }
 
-        public object GetFieldValue(string filedName, out bool bResult)
+        public object GetPropertyValue(string filedName, out bool bResult)
         {
             object retVal = null;
             bResult = false;
             try
             {
-                return retVal = m_WinControl.GetFieldValue(filedName, out bResult);
+                return retVal = m_WinControl.GetPropertyValue(filedName, out bResult);
             }
-            catch (Exception e)
+            catch (SerializationException ex)
             {
             }
-
+            catch (Exception ex)
+            {
+                return null;
+            }
             try
             {
-                retVal = m_WinControl.GetFieldValueEx(filedName, out bResult);
+                retVal = m_WinControl.GetPropertyValueEx(filedName, out bResult);
             }
             catch (Exception ex)
             {
@@ -89,17 +125,17 @@ namespace CSRoot
             return retVal;
         }
 
-        public object GetFieldValueEx(string filedName, out bool bResult)
+        public object GetPropertyValueEx(string filedName, out bool bResult)
         {
             //I dont think we need it. I think above thing covers it
             throw new NotImplementedException();
         }
 
-        public bool SetFieldValue(string filedName, object value, Type typeOfField)
+        public bool SetPropertyValue(string filedName, object value, Type typeOfField)
         {
             try
             {
-                return m_WinControl.SetFieldValue(filedName, value, typeOfField);
+                return m_WinControl.SetPropertyValue(filedName, value, typeOfField);
             }
             catch (Exception ex)
             {
@@ -108,7 +144,7 @@ namespace CSRoot
             try
             {
                 object inst = Serialize(value);
-                return m_WinControl.SetFieldValue(filedName, inst, typeOfField);
+                return m_WinControl.SetPropertyValue(filedName, inst, typeOfField);
             }
             catch (Exception ex)
             {
@@ -119,7 +155,7 @@ namespace CSRoot
 
         public Type GetControlType()
         {
-            throw new NotImplementedException();
+            return m_WinControl.GetControlType();
         }
     }
 }

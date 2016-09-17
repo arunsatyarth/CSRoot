@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -40,14 +41,17 @@ namespace MissionControl
     {
         object Run(Control ctrl);
     }
+    /// <summary>
+    /// Todo: Add BindingFlags parameter as a default value in all these if necessary
+    /// </summary>
     public interface IWinControl
     {
-        object Invoke(string functionname, object[] parameters);
+        object Invoke(string functionname, object[] parameters, BindingFlags flags);
         object InvokeAsync(string functionname, object[] parameters);
         object InvokeRemote(IRemoteRunnable invokeObj);
-        object GetFieldValue(string filedName, out bool bResult);
-        object GetFieldValueEx(string filedName, out bool bResult);
-        bool SetFieldValue(string filedName, object value, Type typeofField);
+        object GetPropertyValue(string filedName, out bool bResult);
+        object GetPropertyValueEx(string filedName, out bool bResult);
+        bool SetPropertyValue(string filedName, object value, Type typeofField);
         Type GetControlType();
     }
 

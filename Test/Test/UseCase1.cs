@@ -23,13 +23,13 @@ namespace Test
                 foreach (IWinControl item in ctrls)
                 {
                     bool bsuccess = false;
-                    string str = (string)item.GetFieldValue("Text", out bsuccess);
+                    string str = (string)item.GetPropertyValue("Text", out bsuccess);
                     Console.WriteLine(str);
                 }
                 bool dddd = false;
 
                 IWinControl ctrl = w.GetControl("this", typeof(Form));
-                string ssss = (string)ctrl.GetFieldValue("Text", out dddd);
+                string ssss = (string)ctrl.GetPropertyValue("Text", out dddd);
                 Console.WriteLine(ssss);
 
 

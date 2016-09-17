@@ -20,8 +20,8 @@ namespace MissionControl
         static bool s_AlreadyHooked = false;
         ILogger s_Logger = Logger.Instance();
         private int m_Port = 60000;//default
-        private string m_CallerDirectory;
-        private string m_CallerExe;
+        public static string m_CallerDirectory;
+        public static string m_CallerExe;
 
         public void Listen()
         {

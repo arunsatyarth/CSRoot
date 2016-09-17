@@ -53,8 +53,9 @@ namespace MissionControl
                 s_Logger.LogInfo("Server has been started at client side");
 
             }
-            catch (Mayday e)
+            catch (Exception e)
             {
+                s_Logger.LogInfo("Exception at Listener:Listen");
             }
 
         }

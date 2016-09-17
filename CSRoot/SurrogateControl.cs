@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using MissionControl;
 using System.Runtime.Serialization;
+using System.Reflection;
 namespace CSRoot
 {
     class SurrogateControl: IWinControl
@@ -13,6 +14,40 @@ namespace CSRoot
         {
             m_WinControl = control;
 
+        }
+        private static MethodInfo s_SerializerFunction;
+        private static object s_SerializerObject;
+        public static SurrogateControl()
+        {
+            Assembly runtimeSerializer=Assembly.LoadFile("RuntimeSerializer.dll");
+            if(runtimeSerializer!=null)
+            {
+                Type serializer=runtimeSerializer.GetType("RuntimeSerializer.RuntimeSerializer");
+                if (serializer != null)
+                {
+                    s_SerializerObject = Activator.CreateInstance(serializer);
+                    s_SerializerFunction = serializer.GetMethod("GenerateSerializableObject", BindingFlags.Static | BindingFlags.Public);
+                }
+
+            }
+        }
+        private object Serialize(object obj)
+        {
+            object newObject = null;
+            object []parameter=null;
+            try
+            {
+                if (s_SerializerObject != null && s_SerializerFunction != null)
+                {
+                    parameter = new object[1] { obj };
+                    newObject = s_SerializerFunction.Invoke(s_SerializerObject, parameter);
+                }
+
+            }
+            catch ( Exception)
+            {
+            }
+            return newObject;
         }
 
         public object Invoke(string functionname, object[] parameters)
@@ -36,14 +71,12 @@ namespace CSRoot
             bResult = false;
             try
             {
-                retVal = m_WinControl.GetFieldValue(filedName, out bResult);
-                return retVal;
+                return retVal = m_WinControl.GetFieldValue(filedName, out bResult);
             }
             catch (Exception e)
             {
             }
 
-            //Try with marshalled value
             try
             {
                 retVal = m_WinControl.GetFieldValueEx(filedName, out bResult);
@@ -58,12 +91,30 @@ namespace CSRoot
 
         public object GetFieldValueEx(string filedName, out bool bResult)
         {
+            //I dont think we need it. I think above thing covers it
             throw new NotImplementedException();
         }
 
-        public bool SetFieldValue(string filedName, object value, Type typeofField)
+        public bool SetFieldValue(string filedName, object value, Type typeOfField)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return m_WinControl.SetFieldValue(filedName, value, typeOfField);
+            }
+            catch (Exception ex)
+            {
+            }
+
+            try
+            {
+                object inst = Serialize(value);
+                return m_WinControl.SetFieldValue(filedName, inst, typeOfField);
+            }
+            catch (Exception ex)
+            {
+            }
+            return false;
+
         }
 
         public Type GetControlType()

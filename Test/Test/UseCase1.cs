@@ -14,17 +14,18 @@ namespace Test
         static void Main(string[] args)
         {
             Engine e = new Engine();
-            Window w = e.GetWindow("SomeForm");
+            Window w = e.GetWindow("Proc1Form1");
             if (w == null)
                 Console.WriteLine("Window not found");
             else
             {
-                List<IWinControl> ctrls = w.GetControls(typeof(TextBox));
+                List<IWinControl> ctrls = w.GetControls(typeof(Button));
                 foreach (IWinControl item in ctrls)
                 {
                     bool bsuccess = false;
                     string str = (string)item.GetPropertyValue("Text", out bsuccess);
                     Console.WriteLine(str);
+                    item.SetPropertyValue("Text","Changed");
                 }
                 bool dddd = false;
 

@@ -1,5 +1,5 @@
 # CSRoot
-Gives you Developer Access to any 3rd party .NET UI app at Runtime. Helps you automate, test, modify any .Net UI App at runtime....
+C# (.Net) Library which gives you Root Access to any  .NET UI app at Runtime. Helps you automate, test, modify any 3rd party App at runtime. It drags any .Net control inside any 3rd party app and make it accessible to  outside processes. 
 
 
 #Use Cases

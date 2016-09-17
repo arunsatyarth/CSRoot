@@ -21,11 +21,20 @@ namespace CSRoot
         volatile ServerSetupInfo data = null;
         static ILogger s_Logger;
         int m_Timeout;
-        volatile static TcpServerChannel channel = new TcpServerChannel("ClientInfoService", 60200);
+        static TcpServerChannel channel = null;
         static ClientInfoProvider()
         {
-            ChannelServices.RegisterChannel(channel, true);
-            s_Logger = Logger.Instance();
+            try
+            {
+
+                channel = new TcpServerChannel("ClientInfoService", 60300);
+                ChannelServices.RegisterChannel(channel, true);
+                s_Logger = Logger.Instance();
+            }
+            catch (Exception e)
+            {
+
+            }
 
         }
         public ClientInfoProvider(int timeout)

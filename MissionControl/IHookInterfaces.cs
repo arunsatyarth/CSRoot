@@ -46,12 +46,12 @@ namespace MissionControl
     /// </summary>
     public interface IWinControl
     {
-        object Invoke(string functionname, object[] parameters, BindingFlags flags);
+        object Invoke(string functionname, object[] parameters, BindingFlags flags = BindingFlags.Default);
         object InvokeAsync(string functionname, object[] parameters);
         object InvokeRemote(IRemoteRunnable invokeObj);
         object GetPropertyValue(string filedName, out bool bResult);
         object GetPropertyValueEx(string filedName, out bool bResult);
-        bool SetPropertyValue(string filedName, object value, Type typeofField);
+        bool SetPropertyValue(string filedName, object value);
         Type GetControlType();
     }
 

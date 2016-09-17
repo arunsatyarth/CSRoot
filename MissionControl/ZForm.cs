@@ -26,9 +26,9 @@ namespace MissionControl
 
             try
             {
-                if (m_ControlListTypes.Contains(controltype))
+                if (m_ControlList.Contains(controltype))
                 {
-                    control = (IWinControl)m_ControlListTypes[controltype];
+                    control = (IWinControl)m_ControlList[controltype];
                 }
                 else
                 {

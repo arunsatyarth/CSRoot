@@ -19,17 +19,25 @@ namespace CSRoot
         private static object s_SerializerObject;
         static SurrogateControl()
         {
-            Assembly runtimeSerializer=Assembly.LoadFile("RuntimeSerializer.dll");
-            if(runtimeSerializer!=null)
+            try
             {
-                Type serializer=runtimeSerializer.GetType("RuntimeSerializer.RuntimeSerializer");
-                if (serializer != null)
+                Assembly runtimeSerializer = Assembly.LoadFile("RuntimeSerializer.dll");
+                if (runtimeSerializer != null)
                 {
-                    s_SerializerObject = Activator.CreateInstance(serializer);
-                    s_SerializerFunction = serializer.GetMethod("GenerateSerializableObject", BindingFlags.Static | BindingFlags.Public);
+                    Type serializer = runtimeSerializer.GetType("RuntimeSerializer.RuntimeSerializer");
+                    if (serializer != null)
+                    {
+                        s_SerializerObject = Activator.CreateInstance(serializer);
+                        s_SerializerFunction = serializer.GetMethod("GenerateSerializableObject", BindingFlags.Static | BindingFlags.Public);
+                    }
+
                 }
+            }
+            catch (Exception e)
+            {
 
             }
+           
         }
         private object Serialize(object obj)
         {
@@ -131,11 +139,11 @@ namespace CSRoot
             throw new NotImplementedException();
         }
 
-        public bool SetPropertyValue(string filedName, object value, Type typeOfField)
+        public bool SetPropertyValue(string filedName, object value)
         {
             try
             {
-                return m_WinControl.SetPropertyValue(filedName, value, typeOfField);
+                return m_WinControl.SetPropertyValue(filedName, value);
             }
             catch (Exception ex)
             {
@@ -144,7 +152,7 @@ namespace CSRoot
             try
             {
                 object inst = Serialize(value);
-                return m_WinControl.SetPropertyValue(filedName, inst, typeOfField);
+                return m_WinControl.SetPropertyValue(filedName, inst);
             }
             catch (Exception ex)
             {

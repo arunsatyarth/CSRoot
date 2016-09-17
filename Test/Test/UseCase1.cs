@@ -14,24 +14,41 @@ namespace Test
         static void Main(string[] args)
         {
             Engine e = new Engine();
-            Window w = e.GetWindow("Proc1Form1");
+            Window w = e.GetWindow("SomeForm");
             if (w == null)
                 Console.WriteLine("Window not found");
             else
             {
-                List<IWinControl> ctrls = w.GetControls(typeof(Button));
-                foreach (IWinControl item in ctrls)
-                {
-                    bool bsuccess = false;
-                    string str = (string)item.GetPropertyValue("Text", out bsuccess);
-                    Console.WriteLine(str);
-                    item.SetPropertyValue("Text","Changed");
-                }
                 bool dddd = false;
+                
+                IWinControl ctrl = w.GetControl("OK", typeof(Button));
+                string ssss;
+                if (ctrl != null)
+                {
+                    ssss = (string)ctrl.GetPropertyValue("Name", out dddd);
+                    ctrl.Invoke("OnClick", new object[] { new EventArgs() });
+                }
 
-                IWinControl ctrl = w.GetControl("this", typeof(Form));
-                string ssss = (string)ctrl.GetPropertyValue("Text", out dddd);
-                Console.WriteLine(ssss);
+                IWinControl ctrl2 = w.GetControl("this", typeof(Form));
+                string ssss2;
+                if (ctrl != null)
+                    ssss2 = (string)ctrl2.GetPropertyValue("Text", out dddd);
+
+                
+                
+                List<IWinControl> ctrls = w.GetControls(typeof(Button));
+                if (ctrls!=null)
+                {
+                    foreach (IWinControl item in ctrls)
+                    {
+                        bool bsuccess = false;
+                        string str = (string)item.GetPropertyValue("Text", out bsuccess);
+                        Console.WriteLine(str);
+                        item.SetPropertyValue("Text", "Changed");
+                    }
+                }
+
+               
 
 
             }

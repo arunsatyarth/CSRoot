@@ -30,14 +30,14 @@ namespace MissionControl
                 if (s_AlreadyHooked == true)
                     return;
                 s_AlreadyHooked = true;
-
+                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
                 //Connect to server at port 60200 and get the port number at which to open service
                 TcpClientChannel clientChannel = new TcpClientChannel("HookedClient", null);
                 ChannelServices.RegisterChannel(clientChannel, true);
                 Trace.WriteLine("MissionControl::injectHook going to connect to server");
                 IChannelServerToClient remoteObject = (IChannelServerToClient)Activator.GetObject(
-                    typeof(IChannelServerToClient), "tcp://localhost:60200/CSRoot.rem");
+                    typeof(IChannelServerToClient), "tcp://localhost:60300/CSRoot.rem");
                 if (remoteObject == null)
                     s_Logger.LogError("Connection to CSRoot server could not be established");
 
@@ -58,6 +58,13 @@ namespace MissionControl
                 s_Logger.LogInfo("Exception at Listener:Listen");
             }
 
+        }
+
+        Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            string hitchikerDll = m_CallerDirectory + "\\MissionControl.dll";
+            Assembly asm = Assembly.LoadFile(hitchikerDll);
+            return asm;
         }
         MarshalByRefObject GetProcessProxy()
         {

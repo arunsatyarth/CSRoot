@@ -43,11 +43,12 @@ namespace MissionControl
         {
             get { return m_ZControl; }
         }
-        private void SetFoundData(IntPtr handle, Control control)
+        private void CreateControl(IntPtr handle, Control control)
         {
             m_ControlFound = true;
             m_Childhandle = handle;
             m_Control = control;
+            m_ControlType = m_Control.GetType();
             string controlId;
             if (control.AccessibleName != null && control.AccessibleName != "")
                 controlId = control.AccessibleName;
@@ -69,7 +70,8 @@ namespace MissionControl
                 if (m_NameOfControl == "this")
                 {
                     control = Control.FromHandle(m_MainWindowhandle);
-                    SetFoundData(m_MainWindowhandle, control);
+                    CreateControl(m_MainWindowhandle, control);
+                    return true;
                 }
                 if (childHandle == null)
                     return false;
@@ -97,7 +99,7 @@ namespace MissionControl
                 }
                 if (found)
                 {
-                    SetFoundData(childHandle, control);
+                    CreateControl(childHandle, control);
                     return true;
                 }
             }

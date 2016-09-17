@@ -24,5 +24,20 @@ namespace TestProject1
         {
 
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            this.FormClosing += Form1_FormClosing;
+        }
+
+        void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            label1.Text="Button was clicked";
+        }
     }
 }

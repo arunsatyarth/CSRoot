@@ -23,7 +23,10 @@ namespace CSRoot
 
         public Engine()
         {
+            m_Timeout = 20000;
+#if DEBUG
             m_Timeout = 200000;
+#endif
             
         }
         private void DllInjector(object param)

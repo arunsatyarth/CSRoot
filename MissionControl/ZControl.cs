@@ -14,15 +14,48 @@ namespace MissionControl
         IntPtr m_ChildControlHandle;
         object m_ControlInstance = null;
         string m_ControlName = "";
-        static ILogger s_Logger = Logger.Instance();
+        static ILogger s_Logger = null;
         [NonSerialized]
-        AutoResetEvent m_FunctionInvocationEvent = new AutoResetEvent(false);
+        AutoResetEvent m_FunctionInvocationEvent = null;
+        private static MethodInfo s_SerializerFunction=null;
+        private static object s_SerializerObject=null;
+        static ZControl()
+        {
+            try
+            {
+                s_Logger = Logger.Instance();
+                string runtimeSerialzerPath = Listener.m_CallerDirectory + @"\RuntimeSerializer.dll";
+                Assembly runtimeSerializer = Assembly.LoadFile(runtimeSerialzerPath);
+                if (runtimeSerializer != null)
+                {
+                    Type serializer = runtimeSerializer.GetType("RuntimeSerializer.RuntimeSerializer");
+                    if (serializer != null)
+                    {
+                        s_SerializerObject = Activator.CreateInstance(serializer);
+                        s_SerializerFunction = serializer.GetMethod("GenerateSerializableObject", BindingFlags.Static | BindingFlags.Public);
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+            }
+        }
+      
         public ZControl(string name, IntPtr handle, object instance, Type controlType)
         {
-            m_ControlName = name;
-            m_ChildControlHandle = handle;
-            m_ControlInstance = instance;
-            m_ControlType = controlType;
+            try
+            {
+                m_FunctionInvocationEvent = new AutoResetEvent(false);
+                m_ControlName = name;
+                m_ChildControlHandle = handle;
+                m_ControlInstance = instance;
+                m_ControlType = controlType;
+            }
+            catch (Exception e)
+            {
+                s_Logger.LogError(e.Message);
+            }
         }
         private bool m_DisposeCalled = false;
 
@@ -43,23 +76,7 @@ namespace MissionControl
             }
             m_DisposeCalled = true;
         }
-        private static MethodInfo s_SerializerFunction;
-        private static object s_SerializerObject;
-        static ZControl()
-        {
-            string runtimeSerialzerPath = Listener.m_CallerDirectory+ @"\RuntimeSerializer.dll";
-            Assembly runtimeSerializer = Assembly.LoadFile(runtimeSerialzerPath);
-            if(runtimeSerializer!=null)
-            {
-                Type serializer=runtimeSerializer.GetType("RuntimeSerializer.RuntimeSerializer");
-                if (serializer != null)
-                {
-                    s_SerializerObject = Activator.CreateInstance(serializer);
-                    s_SerializerFunction = serializer.GetMethod("GenerateSerializableObject", BindingFlags.Static | BindingFlags.Public);
-                }
 
-            }
-        }
         private object Serialize(object obj)
         {
             object newObject = null;
@@ -185,7 +202,7 @@ namespace MissionControl
             return remotableObject;
         }
 
-        public bool SetPropertyValue(string filedName, object value, Type typeofField)
+        public bool SetPropertyValue(string filedName, object value)
         {
             PropertyInfo property = null;
             bool success = false;
